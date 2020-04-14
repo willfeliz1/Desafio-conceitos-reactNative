@@ -22,9 +22,12 @@ export default function App() {
   }, []);
 
   async function handleLikeRepository(id) {
-    // Implement "Like Repository" functionality
+    await api.post(`/repositories/${id}/like`, {});
+    const repositoryIndex = repositories.findIndex(repository => repository.id === id);
+    const repositoriesList = repositories;
+    repositories[repositoryIndex].likes += 1;
+    setRepositories([...repositoriesList]);
   }
-
 
   return (
     <>
@@ -39,8 +42,8 @@ export default function App() {
                 <Text style={styles.repository}>{repository.title}</Text>
 
                 <View style={styles.techsContainer}>
-                  {repository.techs.map((tech) => (
-                    <Text style={styles.tech} key={tech}>
+                  {repository.techs.map((tech, index) => (
+                    <Text style={styles.tech} key={index}>
                       {tech}
                     </Text>
                   ))}
@@ -49,8 +52,7 @@ export default function App() {
                 <View style={styles.likesContainer}>
                   <Text
                     style={styles.likeText}
-                    // Remember to replace "1" below with repository ID: {`repository-likes-${repository.id}`}
-                    testID={`repository-likes-1`}
+                    testID={`repository-likes-${repository.id}`}
                   >
                     {`${repository.likes} curtidas`}
                 </Text>
@@ -58,9 +60,8 @@ export default function App() {
 
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => handleLikeRepository(1)}
-                  // Remember to replace "1" below with repository ID: {`like-button-${repository.id}`}
-                  testID={`like-button-1`}
+                  onPress={() => handleLikeRepository(repository.id)}
+                  testID={`like-button-${repository.id}`}
                 >
                   <Text style={styles.buttonText}>Curtir</Text>
                 </TouchableOpacity>
